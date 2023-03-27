@@ -1,6 +1,6 @@
 # Barracuda Inference Toolkit
 
-Barracuda Inference Toolkit is a custom Unity package for performing inference with the Barracuda inference library. This package includes a flexible `BarracudaModelRunner` base class and various subclasses, such as `MultiClassImageClassifier`, for different tasks.
+Barracuda Inference Toolkit is a custom Unity package for performing inference with the [Barracuda inference library](https://docs.unity3d.com/Packages/com.unity.barracuda@3.0/manual/index.html). This package includes a flexible `BarracudaModelRunner` base class and various subclasses, such as `MultiClassImageClassifier`, for different tasks.
 
 
 
