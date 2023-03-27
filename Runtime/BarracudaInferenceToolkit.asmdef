@@ -1,6 +1,8 @@
 {
     "name": "BarracudaInferenceToolkit",
-    "references": [],
+    "references": [
+        "Unity.Barracuda"
+    ],
     "optionalUnityReferences": [],
     "includePlatforms": [],
     "excludePlatforms": [],
