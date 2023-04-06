@@ -18,7 +18,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/cj-mills/barracuda-inference-toolkit.git"
+        "url": "https://github.com/cj-mills/unity-barracuda-inference-toolkit.git"
     },
     "dependencies": {
         "com.unity.barracuda": "3.0.0"
