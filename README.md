@@ -27,7 +27,7 @@ You can install the Barracuda-Inference-Toolkit package using the Unity Package 
 1. Open your Unity project.
 2. Go to Window > Package Manager.
 3. Click the "+" button in the top left corner, and choose "Add package from git URL..."
-4. Enter the GitHub repository URL: `https://github.com/cj-mills/barracuda-inference-toolkit.git`
+4. Enter the GitHub repository URL: `https://github.com/cj-mills/unity-barracuda-inference-toolkit.git`
 5. Click "Add". The package will be added to your project.
 
 For Unity versions older than 2021.1, add the Git URL to the `manifest.json` file in your project's `Packages` folder as a dependency:
@@ -35,7 +35,7 @@ For Unity versions older than 2021.1, add the Git URL to the `manifest.json` fil
 ```json
 {
   "dependencies": {
-    "com.cj-mills.barracuda-inference-toolkit": "https://github.com/cj-mills/barracuda-inference-toolkit.git",
+    "com.cj-mills.unity-barracuda-inference-toolkit": "https://github.com/cj-mills/unity-barracuda-inference-toolkit.git",
     // other dependencies...
   }
 }
