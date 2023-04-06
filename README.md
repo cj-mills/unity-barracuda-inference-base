@@ -49,7 +49,7 @@ Here's an example of using the `BarracudaInferenceToolkit.MultiClassImageClassif
 
 ```c#
 using UnityEngine;
-using BarracudaInferenceToolkit;
+using CJM.BarracudaInferenceToolkit;
 
 public class ExampleImageClassifier : MonoBehaviour
 {
