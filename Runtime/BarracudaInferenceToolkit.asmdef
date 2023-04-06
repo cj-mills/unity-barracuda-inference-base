@@ -1,5 +1,5 @@
 {
-    "name": "BarracudaInferenceToolkit",
+    "name": "CJM.BarracudaInferenceToolkit",
     "references": [
         "Unity.Barracuda"
     ],
