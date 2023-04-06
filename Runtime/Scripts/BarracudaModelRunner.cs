@@ -2,7 +2,7 @@ using UnityEngine;
 using Unity.Barracuda;
 using System.Collections.Generic;
 
-namespace BarracudaInferenceToolkit
+namespace CJM.BarracudaInferenceToolkit
 {
     public abstract class BarracudaModelRunner : MonoBehaviour
     {
