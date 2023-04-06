@@ -4,7 +4,7 @@ using UnityEngine.Rendering;
 using Unity.Barracuda;
 using System;
 
-namespace BarracudaInferenceToolkit
+namespace CJM.BarracudaInferenceToolkit
 {
     public class MultiClassImageClassifier : BarracudaModelRunner
     {
