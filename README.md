@@ -18,7 +18,6 @@ Barracuda Inference Toolkit is a custom Unity package for performing inference w
 ### Prerequisites
 
 - Unity game engine
-- Barracuda package installed in your Unity project
 
 ### Installation
 
