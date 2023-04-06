@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace CJM.BBox2DToolkit
+namespace CJM.BarracudaInferenceToolkit
 {
     public class DependencyDefineSymbolAdder
     {
