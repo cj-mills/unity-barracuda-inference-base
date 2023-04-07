@@ -16,6 +16,7 @@ namespace CJM.BarracudaInferenceToolkit
         // Indicates if the system supports asynchronous GPU readback
         private bool supportsAsyncGPUReadback = false;
 
+        private const string TransposeLayer = "transpose";
         private string SoftmaxLayer = "softmaxLayer";
         private string outputLayer;
 
