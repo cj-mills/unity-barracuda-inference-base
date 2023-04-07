@@ -219,7 +219,8 @@ namespace CJM.BarracudaInferenceToolkit
             AsyncGPUReadback.Request(outputTextureGPU, 0, textureFormat, OnCompleteReadback);
 
             Color[] outputColors = outputTextureCPU.GetPixels();
-            return outputColors.Select(color => color.r).Reverse().ToArray();
+            // return outputColors.Select(color => color.r).Reverse().ToArray();
+            return outputColors.Select(color => color.r).ToArray();
         }
 
 
