@@ -8,20 +8,29 @@ namespace CJM.BarracudaInferenceToolkit
 {
     public class MultiClassImageClassifier : BarracudaModelRunner
     {
-        [Header("Output Processing")]
-        [SerializeField] private string softmaxLayer = "softmaxLayer";
         [Tooltip("Target output layer index")]
         [SerializeField] private int outputLayerIndex = 0;
-        [Tooltip("Option to asynchronously download model output from GPU to CPU")]
-        [SerializeField] private bool useAsyncGPUReadback = true;
         [Tooltip("JSON file with class labels")]
         [SerializeField] private TextAsset classLabels;
+
+        // Indicates if the system supports asynchronous GPU readback
+        private bool supportsAsyncGPUReadback = false;
+
+        private string SoftmaxLayer = "softmaxLayer";
+        private string outputLayer;
 
         // Helper class for deserializing class labels from the JSON file
         private class ClassLabels { public string[] classes; }
 
         private string[] classes;
+
+        // Texture formats for output processing
+        private TextureFormat textureFormat = TextureFormat.RHalf;
+        private RenderTextureFormat renderTextureFormat = RenderTextureFormat.RHalf;
+
+        // Output textures for processing on CPU and GPU
         private Texture2D outputTextureCPU;
+        private RenderTexture outputTextureGPU;
 
         /// <summary>
         /// Initialize necessary components during the start of the script.
@@ -29,20 +38,16 @@ namespace CJM.BarracudaInferenceToolkit
         protected override void Start()
         {
             base.Start();
-            CheckAsyncGPUReadbackSupport();
-            LoadClassLabels();
-            CreateOutputTexture();
+            CheckAsyncGPUReadbackSupport(); // Check if async GPU readback is supported
+            LoadClassLabels(); // Load class labels from JSON file
+            CreateOutputTextures(); // Initialize output texture
         }
 
-        /// <summary>
-        /// Check if the system supports async GPU readback and update the flag accordingly.
-        /// </summary>
-        private void CheckAsyncGPUReadbackSupport()
+        // Check if the system supports async GPU readback
+        public bool CheckAsyncGPUReadbackSupport()
         {
-            if (!SystemInfo.supportsAsyncGPUReadback)
-            {
-                useAsyncGPUReadback = false;
-            }
+            supportsAsyncGPUReadback = SystemInfo.supportsAsyncGPUReadback && supportsAsyncGPUReadback;
+            return supportsAsyncGPUReadback;
         }
 
         /// <summary>
@@ -53,6 +58,14 @@ namespace CJM.BarracudaInferenceToolkit
             // Load and prepare the model with the base implementation
             base.LoadAndPrepareModel();
 
+            outputLayer = modelBuilder.model.outputs[0];
+
+            // Set worker type for WebGL
+            if (Application.platform == RuntimePlatform.WebGLPlayer)
+            {
+                workerType = WorkerFactory.Type.PixelShader;
+            }
+
             // Check if the last layer is a Softmax layer
             Layer lastLayer = modelBuilder.model.layers[modelBuilder.model.layers.Count - 1];
             bool lastLayerIsSoftmax = lastLayer.activation == Layer.Activation.Softmax;
@@ -60,11 +73,9 @@ namespace CJM.BarracudaInferenceToolkit
             // Add the Softmax layer if the last layer is not already a Softmax layer
             if (!lastLayerIsSoftmax)
             {
-                // Get the output layer name
-                string outputLayer = modelBuilder.model.outputs[outputLayerIndex];
-
                 // Add the Softmax layer
-                modelBuilder.Softmax(softmaxLayer, outputLayer);
+                modelBuilder.Softmax(SoftmaxLayer, outputLayer);
+                outputLayer = SoftmaxLayer;
             }
         }
 
@@ -75,8 +86,8 @@ namespace CJM.BarracudaInferenceToolkit
         {
             base.InitializeEngine();
 
-            // Check if the model is using a Compute Shader backend
-            useAsyncGPUReadback = engine.Summary().Contains("Unity.Barracuda.ComputeVarsWithSharedModel") ? useAsyncGPUReadback : false;
+            // Check if async GPU readback is supported by the engine
+            supportsAsyncGPUReadback = engine.Summary().Contains("Unity.Barracuda.ComputeVarsWithSharedModel");
         }
 
         /// <summary>
@@ -136,53 +147,75 @@ namespace CJM.BarracudaInferenceToolkit
         }
 
         /// <summary>
-        /// Create the output texture that will store the model output.
+        /// Create the output textures that will store the model output.
         /// </summary>
-        private void CreateOutputTexture()
+        private void CreateOutputTextures()
         {
-            outputTextureCPU = new Texture2D(1, classes.Length, TextureFormat.ARGB32, false);
+            outputTextureCPU = new Texture2D(1, classes.Length, textureFormat, false);
+            outputTextureGPU = RenderTexture.GetTemporary(1, classes.Length, 0, renderTextureFormat);
         }
 
         /// <summary>
         /// Execute the model on the provided input texture and return the output array.
         /// </summary>
         /// <param name="inputTexture">The input texture for the model.</param>
-        /// <returns>The output array of the model.</returns>
-        public float[] ExecuteModel(RenderTexture inputTexture)
+        public void ExecuteModel(RenderTexture inputTexture)
         {
             using (Tensor input = new Tensor(inputTexture, channels: 3))
             {
                 base.ExecuteModel(input);
-                return ProcessOutput(engine);
             }
         }
+
 
         /// <summary>
-        /// Process the output of the model execution.
+        /// Copy the model output to a float array.
         /// </summary>
-        /// <param name="engine">The inference engine used to execute the model.</param>
-        /// <returns>The output array of the model.</returns>
-        private float[] ProcessOutput(IWorker engine)
+        public float[] CopyOutputToArray()
         {
-            float[] outputArray = new float[classes.Length];
-
-            using (Tensor output = engine.PeekOutput(softmaxLayer))
+            using (Tensor output = engine.PeekOutput(outputLayer))
             {
-                if (useAsyncGPUReadback)
+                if (workerType == WorkerFactory.Type.PixelShader)
                 {
-                    Tensor reshapedOutput = output.Reshape(new TensorShape(1, classes.Length, 1, 1));
-                    AsyncGPUReadback.Request(reshapedOutput.ToRenderTexture(), 0, TextureFormat.ARGB32, OnCompleteReadback);
-                    Color[] outputColors = outputTextureCPU.GetPixels();
-                    outputArray = outputColors.Select(color => color.r).Reverse().ToArray();
+                    Resources.UnloadUnusedAssets();
                 }
-                else
-                {
-                    outputArray = output.data.Download(output.shape);
-                }
+                return output.data.Download(output.shape);
+            }
+        }
+
+
+        /// <summary>
+        /// Copy the model output to a texture.
+        /// </summary>
+        public void CopyOutputToTexture()
+        {
+            using (Tensor output = engine.PeekOutput(outputLayer))
+            {
+                Tensor reshapedOutput = output.Reshape(new TensorShape(1, classes.Length, 1, 1));
+                reshapedOutput.ToRenderTexture(outputTextureGPU);
+            }
+        }
+
+
+        /// <summary>
+        /// Copy the model output using async GPU readback. If not supported, defaults to synchronous readback.
+        /// </summary>
+        public float[] CopyOutputWithAsyncReadback()
+        {
+            if (!supportsAsyncGPUReadback)
+            {
+                Debug.Log("Async GPU Readback not supported. Defaulting to synchronous readback");
+                return CopyOutputToArray();
             }
 
-            return outputArray;
+            CopyOutputToTexture();
+
+            AsyncGPUReadback.Request(outputTextureGPU, 0, textureFormat, OnCompleteReadback);
+
+            Color[] outputColors = outputTextureCPU.GetPixels();
+            return outputColors.Select(color => color.r).Reverse().ToArray();
         }
+
 
         /// <summary>
         /// Get the class name corresponding to the provided class index.
@@ -211,6 +244,16 @@ namespace CJM.BarracudaInferenceToolkit
                 outputTextureCPU.LoadRawTextureData(request.GetData<uint>());
                 outputTextureCPU.Apply();
             }
+        }
+
+        /// <summary>
+        /// Clean up resources when the script is disabled.
+        /// </summary>
+        protected override void OnDisable()
+        {
+            base.OnDisable();
+            // Release the temporary render texture
+            RenderTexture.ReleaseTemporary(outputTextureGPU);
         }
     }
 }
