@@ -196,7 +196,7 @@ namespace CJM.BarracudaInferenceToolkit
         {
             using (Tensor output = engine.PeekOutput(outputLayer))
             {
-                Debug.Log(output.shape);
+                // Debug.Log(output.shape);
                 // Tensor reshapedOutput = output.Reshape(new TensorShape(1, classes.Length, 1, 1));
                 output.ToRenderTexture(outputTextureGPU);
             }
