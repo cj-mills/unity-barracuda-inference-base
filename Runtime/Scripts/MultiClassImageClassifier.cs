@@ -26,8 +26,8 @@ namespace CJM.BarracudaInferenceToolkit
         private string[] classes;
 
         // Texture formats for output processing
-        private TextureFormat textureFormat = TextureFormat.RGBA32;
-        private RenderTextureFormat renderTextureFormat = RenderTextureFormat.ARGB32;
+        private TextureFormat textureFormat = TextureFormat.RHalf;
+        private RenderTextureFormat renderTextureFormat = RenderTextureFormat.RHalf;
 
         // Output textures for processing on CPU and GPU
         private Texture2D outputTextureCPU;
@@ -156,8 +156,8 @@ namespace CJM.BarracudaInferenceToolkit
         /// </summary>
         private void CreateOutputTextures()
         {
-            outputTextureCPU = new Texture2D(1, classes.Length, textureFormat, false);
-            outputTextureGPU = RenderTexture.GetTemporary(1, classes.Length, 0, renderTextureFormat);
+            outputTextureCPU = new Texture2D(classes.Length, 1, textureFormat, false);
+            outputTextureGPU = RenderTexture.GetTemporary(classes.Length, 1, 0, renderTextureFormat);
         }
 
         /// <summary>
