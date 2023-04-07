@@ -196,8 +196,6 @@ namespace CJM.BarracudaInferenceToolkit
         {
             using (Tensor output = engine.PeekOutput(outputLayer))
             {
-                // Debug.Log(output.shape);
-                // Tensor reshapedOutput = output.Reshape(new TensorShape(1, classes.Length, 1, 1));
                 output.ToRenderTexture(outputTextureGPU);
             }
         }
@@ -219,7 +217,6 @@ namespace CJM.BarracudaInferenceToolkit
             AsyncGPUReadback.Request(outputTextureGPU, 0, textureFormat, OnCompleteReadback);
 
             Color[] outputColors = outputTextureCPU.GetPixels();
-            // return outputColors.Select(color => color.r).Reverse().ToArray();
             return outputColors.Select(color => color.r).ToArray();
         }
 
