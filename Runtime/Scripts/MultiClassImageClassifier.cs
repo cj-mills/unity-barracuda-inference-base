@@ -8,10 +8,12 @@ namespace CJM.BarracudaInferenceToolkit
 {
     public class MultiClassImageClassifier : BarracudaModelRunner
     {
-        [Tooltip("Target output layer index")]
-        [SerializeField] private int outputLayerIndex = 0;
         [Tooltip("JSON file with class labels")]
         [SerializeField] private TextAsset classLabels;
+        [Tooltip("Number of frames to wait to unload unused assets when using Pixel Shader backend")]
+        [SerializeField] private int unloadAssetsInterval = 100;
+
+        private int frameCounter = 0;
 
         // Indicates if the system supports asynchronous GPU readback
         private bool supportsAsyncGPUReadback = false;
@@ -182,7 +184,12 @@ namespace CJM.BarracudaInferenceToolkit
             {
                 if (workerType == WorkerFactory.Type.PixelShader)
                 {
-                    Resources.UnloadUnusedAssets();
+                    frameCounter++;
+                    if (frameCounter % unloadAssetsInterval == 0)
+                    {
+                        Resources.UnloadUnusedAssets();
+                        frameCounter = 0;
+                    }
                 }
                 return output.data.Download(output.shape);
             }
