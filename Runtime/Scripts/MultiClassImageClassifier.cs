@@ -77,6 +77,10 @@ namespace CJM.BarracudaInferenceToolkit
                 modelBuilder.Softmax(SoftmaxLayer, outputLayer);
                 outputLayer = SoftmaxLayer;
             }
+
+            // Apply transpose operation on the output layer
+            modelBuilder.Transpose(TransposeLayer, outputLayer, new[] { 0, 1, 3, 2 });
+            outputLayer = TransposeLayer;
         }
 
         /// <summary>
@@ -191,8 +195,8 @@ namespace CJM.BarracudaInferenceToolkit
         {
             using (Tensor output = engine.PeekOutput(outputLayer))
             {
-                Tensor reshapedOutput = output.Reshape(new TensorShape(1, classes.Length, 1, 1));
-                reshapedOutput.ToRenderTexture(outputTextureGPU);
+                // Tensor reshapedOutput = output.Reshape(new TensorShape(1, classes.Length, 1, 1));
+                output.ToRenderTexture(outputTextureGPU);
             }
         }
 
@@ -241,8 +245,23 @@ namespace CJM.BarracudaInferenceToolkit
 
             if (outputTextureCPU != null)
             {
-                outputTextureCPU.LoadRawTextureData(request.GetData<uint>());
-                outputTextureCPU.Apply();
+                try
+                {
+                    // Load readback data into the output texture and apply changes
+                    outputTextureCPU.LoadRawTextureData(request.GetData<uint>());
+                    outputTextureCPU.Apply();
+                }
+                catch (UnityException ex)
+                {
+                    if (ex.Message.Contains("LoadRawTextureData: not enough data provided (will result in overread)."))
+                    {
+                        Debug.Log("Updating input data size to match the texture size.");
+                    }
+                    else
+                    {
+                        Debug.LogError($"Unexpected UnityException: {ex.Message}");
+                    }
+                }
             }
         }
 
