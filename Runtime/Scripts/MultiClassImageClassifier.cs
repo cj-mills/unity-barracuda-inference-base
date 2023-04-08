@@ -10,9 +10,10 @@ namespace CJM.BarracudaInferenceToolkit
     {
         [Tooltip("JSON file with class labels")]
         [SerializeField] private TextAsset classLabels;
-        [Tooltip("Number of frames to wait to unload unused assets when using Pixel Shader backend")]
-        [SerializeField] private int unloadAssetsInterval = 100;
+        [Tooltip("Interval (in frames) for unloading unused assets with Pixel Shader backend")]
+        [SerializeField] private int pixelShaderUnloadInterval = 100;
 
+        
         private int frameCounter = 0;
 
         // Indicates if the system supports asynchronous GPU readback
@@ -185,7 +186,7 @@ namespace CJM.BarracudaInferenceToolkit
                 if (workerType == WorkerFactory.Type.PixelShader)
                 {
                     frameCounter++;
-                    if (frameCounter % unloadAssetsInterval == 0)
+                    if (frameCounter % pixelShaderUnloadInterval == 0)
                     {
                         Resources.UnloadUnusedAssets();
                         frameCounter = 0;
