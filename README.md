@@ -13,6 +13,12 @@ Barracuda Inference Toolkit is a custom Unity package for performing inference w
 
 
 
+## Extensions
+
+* [unity-barracuda-inference-yolox](https://github.com/cj-mills/unity-barracuda-inference-yolox): Perform object detection using YOLOX models
+
+
+
 ## Getting Started
 
 ### Prerequisites
