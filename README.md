@@ -1,14 +1,13 @@
-# Barracuda Inference Toolkit
+# Barracuda Inference Base
 
-Barracuda Inference Toolkit is a custom Unity package for performing inference with the [Barracuda inference library](https://docs.unity3d.com/Packages/com.unity.barracuda@3.0/manual/index.html). This package includes a flexible `BarracudaModelRunner` base class and various subclasses, such as `MultiClassImageClassifier`, for different tasks.
+Barracuda Inference Base is a custom Unity package that provides a foundation for performing inference with the [Barracuda inference library](https://docs.unity3d.com/Packages/com.unity.barracuda@3.0/manual/index.html). It includes a flexible base class to extend with task-specific packages.
 
 
 
 ## Features
 
 - Perform inference using the Unity Barracuda library
-- Extendable `BarracudaModelRunner` base class for custom inference tasks
-- Pre-built subclasses, such as `MultiClassImageClassifier`, for various tasks
+- Extensible `BarracudaModelRunner` base class for custom inference tasks
 - Support for different compute backends and channel orders
 
 
@@ -27,12 +26,12 @@ Barracuda Inference Toolkit is a custom Unity package for performing inference w
 
 ### Installation
 
-You can install the Barracuda-Inference-Toolkit package using the Unity Package Manager:
+You can install the Barracuda Inference Base package using the Unity Package Manager:
 
 1. Open your Unity project.
 2. Go to Window > Package Manager.
 3. Click the "+" button in the top left corner, and choose "Add package from git URL..."
-4. Enter the GitHub repository URL: `https://github.com/cj-mills/unity-barracuda-inference-toolkit.git`
+4. Enter the GitHub repository URL: `https://github.com/cj-mills/unity-barracuda-model-runner.git`
 5. Click "Add". The package will be added to your project.
 
 For Unity versions older than 2021.1, add the Git URL to the `manifest.json` file in your project's `Packages` folder as a dependency:
@@ -40,41 +39,9 @@ For Unity versions older than 2021.1, add the Git URL to the `manifest.json` fil
 ```json
 {
   "dependencies": {
-    "com.cj-mills.barracuda-inference-toolkit": "https://github.com/cj-mills/unity-barracuda-inference-toolkit.git",
+    "com.cj-mills.barracuda-model-runner": "https://github.com/cj-mills/unity-barracuda-model-runner.git",
     // other dependencies...
   }
-}
-```
-
-
-
-## Usage
-
-Here's an example of using the `BarracudaInferenceToolkit.MultiClassImageClassifier` subclass:
-
-```c#
-using UnityEngine;
-using CJM.BarracudaInferenceToolkit;
-
-public class ExampleImageClassifier : MonoBehaviour
-{
-    public RenderTexture inputTexture;
-    public MultiClassImageClassifier classifier;
-
-    void Update()
-    {
-        // Execute the model on the provided input texture.
-        float[] output = classifier.ExecuteModel(inputTexture);
-
-        // Get the predicted class index.
-        int predictedClassIndex = Array.IndexOf(output, output.Max());
-
-        // Get the class name corresponding to the predicted class index.
-        string predictedClassName = classifier.GetClassName(predictedClassIndex);
-
-        // Print the predicted class name.
-        Debug.Log($"Predicted class: {predictedClassName}");
-    }
 }
 ```
 
