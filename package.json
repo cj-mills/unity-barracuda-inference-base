@@ -1,9 +1,9 @@
 {
-    "name": "com.cj-mills.barracuda-inference-toolkit",
-    "displayName": "Barracuda Inference Toolkit",
+    "name": "com.cj-mills.barracuda-inference-base",
+    "displayName": "Barracuda Inference Base",
     "version": "1.0.0",
     "unity": "2020.3",
-    "description": "Barracuda Inference Toolkit is a custom Unity package for performing inference with the Barracuda inference library. This package includes a flexible `BarracudaModelRunner` base class and various subclasses, such as `MultiClassImageClassifier`, for different tasks.",
+    "description": "Barracuda Inference Base provides a foundation for performing inference with the Barracuda inference library. It includes a flexible base class for task-specific packages to extend.",
     "keywords": [
         "unity",
         "barracuda",
@@ -18,7 +18,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/cj-mills/unity-barracuda-inference-toolkit.git"
+        "url": "https://github.com/cj-mills/unity-barracuda-inference-base.git"
     },
     "dependencies": {
         "com.unity.barracuda": "3.0.0"
