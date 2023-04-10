@@ -14,6 +14,7 @@ Barracuda Inference Base is a custom Unity package that provides a foundation fo
 
 ## Extensions
 
+* [unity-barracuda-inference-image-classification](https://github.com/cj-mills/unity-barracuda-inference-image-classification): Perform image classification using computer vision models.
 * [unity-barracuda-inference-yolox](https://github.com/cj-mills/unity-barracuda-inference-yolox): Perform object detection using YOLOX models
 
 
