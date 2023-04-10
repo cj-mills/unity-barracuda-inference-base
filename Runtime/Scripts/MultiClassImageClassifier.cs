@@ -4,7 +4,7 @@ using UnityEngine.Rendering;
 using Unity.Barracuda;
 using System;
 
-namespace CJM.BarracudaInferenceToolkit
+namespace CJM.BarracudaInference
 {
     public class MultiClassImageClassifier : BarracudaModelRunner
     {
@@ -13,7 +13,7 @@ namespace CJM.BarracudaInferenceToolkit
         [Tooltip("Interval (in frames) for unloading unused assets with Pixel Shader backend")]
         [SerializeField] private int pixelShaderUnloadInterval = 100;
 
-        
+
         private int frameCounter = 0;
 
         // Indicates if the system supports asynchronous GPU readback
