@@ -1,11 +1,11 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace CJM.BarracudaInferenceToolkit
+namespace CJM.BarracudaInference
 {
     public class DependencyDefineSymbolAdder
     {
-        private const string CustomDefineSymbol = "CJM_BARRACUDA_INFERENCE_TOOLKIT";
+        private const string CustomDefineSymbol = "CJM_BARRACUDA_INFERENCE";
 
         [InitializeOnLoadMethod]
         public static void AddCustomDefineSymbol()
