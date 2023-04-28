@@ -22,6 +22,17 @@ Barracuda Inference Base is a custom Unity package that provides a foundation fo
 
 
 
+
+## Demo Projects
+
+| GitHub Repository                                            | Description                                                |
+| ------------------------------------------------------------ | ---------------------------------------------------------- |
+| [barracuda-image-classification-demo](https://github.com/cj-mills/barracuda-image-classification-demo) | Perform image classification using computer vision models. |
+| [barracuda-inference-yolox-demo](https://github.com/cj-mills/barracuda-inference-yolox-demo) | Perform object detection using YOLOX models.               |
+| [barracuda-inference-posenet-demo](https://github.com/cj-mills/barracuda-inference-posenet-demo) | Perform 2D human pose estimation using PoseNet models.     |
+
+
+
 ## Getting Started
 
 ### Prerequisites
