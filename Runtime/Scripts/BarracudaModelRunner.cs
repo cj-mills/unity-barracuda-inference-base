@@ -7,6 +7,7 @@ namespace CJM.BarracudaInference
     public abstract class BarracudaModelRunner : MonoBehaviour
     {
         [Header("Model Assets")]
+        [Tooltip("The neural network model")]
         [SerializeField] protected NNModel model;
         [Tooltip("Option to order tensor data channels first (EXPERIMENTAL)")]
         [SerializeField] private bool useNCHW = true;
