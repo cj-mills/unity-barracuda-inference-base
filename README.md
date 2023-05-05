@@ -12,6 +12,12 @@ Barracuda Inference Base is a custom Unity package that provides a foundation fo
 
 
 
+## Code Walkthrough
+
+* [Code Walkthrough: Unity Barracuda Inference Base Package](https://github.com/cj-mills/unity-barracuda-inference-base)
+
+
+
 ## Extensions
 
 | GitHub Repository                                            | Description                                                |
